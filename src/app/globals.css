@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==================== */
+/* Root Theme Variables */
+/* ==================== */
 
-@theme inline {
+:root {
+  --background: #191b1d;
+  --foreground: #171717;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-primary: #649ef5;
+  --color-dark: #191b1d;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #191b1d;
     --foreground: #ededed;
   }
 }
+
+/* ================ */
+/* Base Styling     */
+/* ================ */
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ================= */
+/* Utility Classes   */
+/* ================= */
+
+/* Backgrounds */
+.bg-theme {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-dark {
+  background-color: var(--color-dark);
+}
+
+/* Text Colors */
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-dark {
+  color: var(--color-dark);
+}
+
+/* Borders */
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-dark {
+  border-color: var(--color-dark);
+}
+
+/* Shadow */
+.shadow-primary {
+  box-shadow: 0 4px 6px -1px var(--color-primary);
+}
+
+/* Custom Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 700;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+.btn-outline {
+  @apply border border-[#649ef5] flex bg-none text-[#649ef5] font-semibold px-4 py-2 rounded-md;
+}
+
+.btn-primary:hover {
+  background-color: #508be0;
+}
+.heading-gradient {
+  @apply text-[48px] font-bold bg-gradient-to-r from-[#00FFDD] to-[#AA00DD] inline-block text-transparent bg-clip-text;
+}
+.sub-text {
+  @apply font-normal text-[32px] text-center leading-[100%] text-[#D0D4D9];
 }

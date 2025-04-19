@@ -1,103 +1,100 @@
+import Hero from "@/components/Hero";
+import Navbar from "../components/Navbar";
 import Image from "next/image";
+import ScrollCarosel from "@/components/ScrollCarosel";
+import Counter from "@/components/Counter";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="min-h-screen">
+      <Navbar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <section id="home" className="h-screen flex items-center justify-center ">
+        <Hero />
+      </section>
+      <div className="flex flex-col items-center justify-center text-center py-20 border-b border-[#979797]">
+        <p className="heading-gradient">You are the Auteur</p>
+        <p className="sub-text  w-2xl">
+          Empower yourself to create interactive marketing, sales, and ad
+          content through AI.​
+        </p>
+      </div>
+
+      <section id="inspiration" className="my-20  px-4">
+        <div className=" flex flex-col justify-center items-center text-center gap-10">
+          <h4 className="font-semibold text-[20px] tracking-[6px] text-white">
+            INTRODUCTION
+          </h4>
+          <Image
+            // className="w-[369px] h-[116px]"
+            src={"/assets/logo-2.svg"}
+            width={600}
+            height={600}
+            alt="logo"
+          />
+          <p className="sub-text w-2xl">
+            {" "}
+            Transform your vision into reality. Create ads that convert ideas
+            into leads. A unified creative platform… simple, robust, fast.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <ScrollCarosel />
+      </section>
+
+      <section
+        id="pricing"
+        className="h-full border-t border-b border-[#979797]"
+      >
+        <div className="flex w-full">
+          <div className="relative px-32 border-r border-[#979797] flex-[0.5] w-full py-32">
+            <Image
+              src={"/assets/images/graps-1.png"}
+              width={500}
+              height={500}
+              alt="graph"
+            />
+            <Image
+              className="absolute z-20 right-40 top-[400px]"
+              src={"/assets/images/graph-2.png"}
+              width={500}
+              height={500}
+              alt="graph2"
+            />
+          </div>
+          <div className="flex-[0.5] text-center mx-32 py-10">
+            <h3 className="heading-gradient">
+              Smarter ads, better results! Automated targeting that delivers
+              ROI.
+            </h3>
+            <p className="text-[18px] text-[#D0D4D9] mb-6">
+              BridgeStudio helps you create ad campaigns more cost effectively,
+              on-target, and efficiently.
+            </p>
+            <div className="py-8">
+              <p className="text-[#6CCAFF] font-bold text-[48px]">
+                <Counter target={85} suffix="%" duration={1500} />
+              </p>
+              <p className="text-[18px] text-[#D0D4D9]">Cost reduction</p>
+            </div>
+            <div className="w-full border-t border-1 border-[#979797]" />
+            <div className="py-8">
+              <p className="text-[#6CCAFF] font-bold text-[48px]">
+                <Counter target={10} suffix="x" duration={1500} />
+              </p>
+              <p className="text-[18px] text-[#D0D4D9]">
+                Faster time to market
+              </p>
+            </div>
+            <div className="w-full border-t border-1 border-[#979797]" />
+            <div className="py-8">
+              <p className="text-[#6CCAFF] font-bold text-[48px]">
+                <Counter target={5} suffix="x" duration={1500} />
+              </p>
+              <p className="text-[18px] text-[#D0D4D9]">generation</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
