@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import Image from "next/image";
 import ScrollCarosel from "@/components/ScrollCarosel";
 import Counter from "@/components/Counter";
+import Platforms from "@/components/Platforms";
+import CreateCharacter from "@/components/CreateCharacter";
 
 export default function Home() {
   return (
@@ -94,6 +96,18 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section>
+      <section
+        id="platform"
+        className="py-20 border-b border-[#979797] flex items-center justify-center "
+      >
+        <Platforms />
+      </section>
+      <section
+        id="create-character"
+        className="py-20 flex items-center justify-center "
+      >
+        <CreateCharacter />
       </section>
     </main>
   );
