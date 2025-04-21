@@ -176,6 +176,58 @@ export default function ScrollCarousel() {
 
   return (
     <div className="relative my-20 text-white h-[500px] overflow-hidden max-w-screen-2xl mx-auto" ref={containerRef}>
+      <style jsx global>{`
+        @keyframes slideFromBottom {
+          from {
+            transform: translateY(30px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        /* Custom stacking effect for images - based on test.css */
+        .stacked-image-container {
+          position: relative;
+          width: 560px;
+          height: 420px;
+          perspective: 1000px;
+          overflow: visible;
+        }
+
+        .carousel-image {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 1.5rem;
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          overflow: hidden;
+        }
+
+        .image-current {
+          z-index: 20;
+          transform: translateY(0) scale(1) rotateX(0deg);
+          opacity: 1;
+        }
+
+        .image-prev {
+          z-index: 10;
+          transform: translateY(-20px) scale(0.95) rotateX(5deg);
+          opacity: 0.7;
+          filter: brightness(0.7);
+        }
+
+        .image-hidden {
+          z-index: 0;
+          transform: translateY(50px) scale(0.9) rotateX(10deg);
+          opacity: 0;
+        }
+      `}</style>
+
       {/* Navigation Dots */}
       <div className="absolute right-8 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-50">
         {carouselData.map((_, index) => (
@@ -190,59 +242,82 @@ export default function ScrollCarousel() {
 
       {/* Slides */}
       <div className="w-full h-full relative">
-        {carouselData.map((item, index) => (
-          <div
-            key={item.id}
-            className={`absolute inset-0 flex items-center justify-center ${index === currentIndex || index === prevIndex ? 'visible' : 'invisible'}`}
-          >
-            <div className="flex flex-wrap md:flex-nowrap gap-8 items-center justify-center max-w-6xl w-full px-4 md:px-8 lg:px-12 mx-auto">
-              {/* Image with slide animation */}
-              {item.image ? (
-                <div
-                  className={`carousel-image w-[560px] shrink-0 ${
-                    index === currentIndex ? 'carousel-slide-active z-20' : index === prevIndex ? 'carousel-slide-inactive z-10' : 'opacity-0 z-0'
-                  }`}
-                >
-                  <div className="relative w-full h-full">
-                    <Image src={item.image} alt={item.title} fill className="object-cover" />
+        {carouselData.map((item, index) => {
+          // Determine visibility classes
+          const isActive = index === currentIndex
+          const isPrevious = index === prevIndex
+          const isVisible = isActive || isPrevious
+
+          return (
+            <div key={item.id} className={`absolute inset-0 flex items-center justify-center ${isVisible ? 'visible' : 'invisible'}`}>
+              <div className="flex flex-wrap md:flex-nowrap gap-8 items-center justify-center max-w-6xl w-full px-4 md:px-8 lg:px-12 mx-auto">
+                {/* Image with stacking animation */}
+                <div className="stacked-image-container shrink-0">
+                  {carouselData.map((imageItem, imageIndex) => {
+                    // Only render current and previous images
+                    if (imageItem.image && (imageIndex === currentIndex || imageIndex === prevIndex)) {
+                      return (
+                        <div
+                          key={`image-${imageItem.id}`}
+                          className={`carousel-image ${
+                            imageIndex === currentIndex ? 'image-current' : imageIndex === prevIndex ? 'image-prev' : 'image-hidden'
+                          }`}
+                        >
+                          <Image
+                            src={imageItem.image}
+                            alt={imageItem.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 560px"
+                            priority={imageIndex === 0}
+                            className="object-cover"
+                          />
+                        </div>
+                      )
+                    }
+                    return null
+                  })}
+
+                  {/* No image fallback */}
+                  {item.image === null && isActive && (
+                    <div className="carousel-image image-current flex items-center justify-center text-white">No Image Available</div>
+                  )}
+                </div>
+
+                {/* Text with slide animation */}
+                <div className="flex-1 flex flex-col justify-center">
+                  {/* Only show text content for current slide */}
+                  {isActive && (
+                    <div
+                      key={`text-${item.id}`}
+                      className="transform transition-transform duration-500 self-stretch"
+                      style={{
+                        animation: 'slideFromBottom 0.4s ease-out forwards',
+                      }}
+                    >
+                      <h2 className="text-[36px] font-normal mb-4">{item.title}</h2>
+                      <div className="self-stretch inline-flex justify-start items-center gap-1">
+                        <p className="flex-1 justify-start text-base-text-medium-default text-lg font-normal font-Inter leading-normal text-[#D0D4D9] mb-8">
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Buttons without animation - fixed position */}
+                  <div className="z-30 flex flex-wrap gap-3">
+                    {isActive &&
+                      item.buttons.map((button, btnIndex) => (
+                        <button key={btnIndex} className="btn-outline">
+                          {button.text}
+                          <Image src={button.icon} alt="arrow" width={20} height={20} />
+                        </button>
+                      ))}
                   </div>
-                </div>
-              ) : (
-                <div
-                  className={`carousel-image w-[560px] shrink-0 flex items-center justify-center text-white ${
-                    index === currentIndex ? 'carousel-slide-active z-20' : index === prevIndex ? 'carousel-slide-inactive z-10' : 'opacity-0 z-0'
-                  }`}
-                >
-                  No Image Available
-                </div>
-              )}
-
-              {/* Text with fade animation */}
-              <div className="flex-1 flex flex-col justify-center">
-                {/* Text content with slide animation */}
-                <div
-                  className={`${
-                    index === currentIndex ? 'carousel-text-active z-20' : index === prevIndex ? 'carousel-text-inactive z-10' : 'opacity-0 z-0'
-                  }`}
-                >
-                  <h2 className="text-[36px] font-normal mb-4">{item.title}</h2>
-                  <p className="text-[#D0D4D9] text-[18px] mb-6">{item.description}</p>
-                </div>
-
-                {/* Buttons without animation - fixed position */}
-                <div className="z-30 flex flex-wrap gap-3">
-                  {index === currentIndex &&
-                    item.buttons.map((button, btnIndex) => (
-                      <button key={btnIndex} className="btn-outline">
-                        {button.text}
-                        <Image src={button.icon} alt="arrow" width={20} height={20} />
-                      </button>
-                    ))}
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
