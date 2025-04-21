@@ -33,6 +33,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
 }
 
 /* ================= */
@@ -166,6 +167,157 @@ body {
   }
 }
 
+/* Scroll Animation for Banner to Book Fantasy transition */
+@keyframes moveToBookPosition {
+  0% {
+    width: 100vw;
+    height: 800px;
+    border-radius: 0;
+    transform: translate(0, 0) scale(1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  40% {
+    width: 80vw;
+    height: 600px;
+    border-radius: 16px;
+    transform: translate(10vw, 10vh) scale(0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  70% {
+    width: 60vw;
+    height: 400px;
+    border-radius: 24px;
+    transform: translate(20vw, var(--scroll-offset) * 0.6) scale(0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  100% {
+    width: 513.16px;
+    height: 288px;
+    border-radius: 8px;
+    transform: translate(calc(50vw - 513.16px / 2 + 175px), var(--scroll-offset)) scale(1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+}
+
+@keyframes moveToFullWidth {
+  0% {
+    width: 513.16px;
+    height: 288px;
+    border-radius: 8px;
+    transform: translate(calc(50vw - 513.16px / 2 + 175px), var(--scroll-offset)) scale(1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  30% {
+    width: 60vw;
+    height: 400px;
+    border-radius: 24px;
+    transform: translate(20vw, var(--scroll-offset) * 0.6) scale(0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  60% {
+    width: 80vw;
+    height: 600px;
+    border-radius: 16px;
+    transform: translate(10vw, 10vh) scale(0.9);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+  100% {
+    width: 100vw;
+    height: 800px;
+    border-radius: 0;
+    transform: translate(0, 0) scale(1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInBook {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutBook {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Add a subtle perspective effect */
+.banner-image-container {
+  perspective: 1000px;
+}
+
+.banner-image-animating-down {
+  animation: moveToBookPosition 1.5s forwards cubic-bezier(0.23, 1, 0.32, 1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  object-fit: cover;
+  will-change: transform, width, height, border-radius;
+  transform-origin: center center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.banner-image-animating-up {
+  animation: moveToFullWidth 1.5s forwards cubic-bezier(0.23, 1, 0.32, 1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  object-fit: cover;
+  will-change: transform, width, height, border-radius;
+  transform-origin: center center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.book-container-fade-out {
+  animation: fadeOutBook 0.4s forwards;
+}
+
+.book-container-fade-in {
+  animation: fadeInBook 0.4s forwards;
+}
+
 .carousel-slide-active {
   animation: slideInFromBottom 0.8s ease-out forwards;
   transform-origin: bottom center;
@@ -188,4 +340,35 @@ body {
   @apply rounded-2xl overflow-hidden;
   aspect-ratio: 4/3;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* ================= */
+/* Creative Upscaler Zoom Effect */
+/* ================= */
+
+.transform-gpu {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Helper class to make the scroll smoother */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
