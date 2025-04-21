@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ==================== */
 /* Root Theme Variables */
@@ -87,7 +87,29 @@ body {
   transition: background 0.2s ease;
 }
 .btn-outline {
-  @apply border border-[#649ef5] flex bg-none text-[#649ef5] font-semibold px-4 py-2 rounded-md;
+  display: inline-flex;
+  height: 34px;
+  padding: 7px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 6px;
+  border: 2px solid #649ef5;
+  background: transparent;
+  color: #649ef5;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.btn-outline img {
+  margin-left: 4px;
+}
+
+/* Disabled state */
+.btn-outline:disabled {
+  border-color: rgba(100, 158, 245, 0.5);
+  color: #446392;
+  cursor: not-allowed;
 }
 
 .btn-primary:hover {
@@ -98,4 +120,72 @@ body {
 }
 .sub-text {
   @apply font-normal text-[32px] text-center leading-[100%] text-[#D0D4D9];
+}
+
+/* ================= */
+/* Carousel Animations */
+/* ================= */
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToBottom {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.carousel-slide-active {
+  animation: slideInFromBottom 0.8s ease-out forwards;
+  transform-origin: bottom center;
+}
+
+.carousel-slide-inactive {
+  animation: slideOutToBottom 0.8s ease-in forwards;
+  transform-origin: bottom center;
+}
+
+.carousel-text-active {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.carousel-text-inactive {
+  animation: fadeOut 0.8s ease-in forwards;
+}
+
+.carousel-image {
+  @apply rounded-2xl overflow-hidden;
+  aspect-ratio: 4/3;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.25);
 }
