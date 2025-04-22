@@ -56,7 +56,7 @@ const carouselData = [
     description:
       'Be your own sound studio. Effortlessly create engaging music, professional voiceover, clone unique voices, and dub content in multiple languages. From crisp narration to custom soundtracks, build high-quality audio in any voice, style, or language for pro-level advertisements.',
     buttons: [{ text: 'Create audio tracks', icon: '/assets/arrow-square-out.svg' }],
-    image: null,
+    image: '/assets/images/audio.jpg',
   },
   {
     id: 7,
