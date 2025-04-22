@@ -9,6 +9,9 @@ const Pricing = () => {
       id: 'free',
       name: 'Free',
       price: '$0',
+      annualPrice: '$0',
+      annualTotal: '$0',
+      originalAnnualTotal: '$0',
       description: "For individuals looking to explore BrightBrush's features.",
       features: [
         'Credits reset to 200 monthly, unused credits do not roll over',
@@ -25,6 +28,9 @@ const Pricing = () => {
       id: 'basic',
       name: 'Basic',
       price: '$10',
+      annualPrice: '$8',
+      annualTotal: '$96',
+      originalAnnualTotal: '$120',
       description: 'For individuals and small teams. Max. 5 users per subscription.',
       features: [
         'Includes all Free Plan features, plus:',
@@ -44,6 +50,9 @@ const Pricing = () => {
       id: 'pro',
       name: 'Pro',
       price: '$49',
+      annualPrice: '$39.20',
+      annualTotal: '$470.40',
+      originalAnnualTotal: '$588',
       description: 'For individuals and larger teams looking. Max. 15 users per workspace.',
       features: [
         'Includes all Basic Plan features, plus:',
@@ -60,6 +69,9 @@ const Pricing = () => {
       id: 'enterprise',
       name: 'Enterprise',
       price: 'Contact us',
+      annualPrice: 'Contact us',
+      annualTotal: 'Contact us',
+      originalAnnualTotal: 'Contact us',
       description: 'For large teams and organizations that need a custom, secure, and robust flexibility at scale.',
       features: [
         'Includes all Pro Plan features, plus:',
@@ -107,7 +119,7 @@ const Pricing = () => {
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 p-6 max-w-[1440px] mx-auto">
+      <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 p-6 max-w-[1440px] mx-auto">
         {plans.map((plan) => (
           <div
             key={plan.id}
@@ -120,11 +132,29 @@ const Pricing = () => {
             )}
             <h3 className="text-[36px] ">{plan.name}</h3>
             <p className="text-sm mt-1 mb-4  ">{plan.description}</p>
-            <div className="flex items-baseline mb-6">
-              <span className={`${!plan.isEnterprise ? 'text-[48px] mt-2' : 'text-[40px]'} font-semibold`}>{plan.price}</span>
-              {!plan.isEnterprise && <span className="ml-1 text-sm opacity-70">/ monthly</span>}
+            <div className="flex items-baseline mb-2 flex-wrap">
+              <span className={`${!plan.isEnterprise ? 'text-[48px] mt-2' : 'text-[40px]'} font-semibold`}>
+                {isAnnual ? plan.annualPrice : plan.price}
+              </span>
+              {!plan.isEnterprise && (
+                <>
+                  <span className="ml-1 text-sm opacity-70 whitespace-nowrap">/ month</span>
+                  {isAnnual && plan.id !== 'free' && (
+                    <span className="ml-2 text-sm line-through opacity-70 whitespace-nowrap">{plan.price} / month</span>
+                  )}
+                </>
+              )}
             </div>
-            <p className="text-[18px] opacity-70 mb-2">Billed monthly</p>
+
+            {isAnnual && !plan.isEnterprise && plan.id !== 'free' && (
+              <div className="flex items-baseline mb-4 flex-wrap">
+                <span className="text-[20px] font-semibold text-[#6CCAFF]">{plan.annualTotal}</span>
+                <span className="ml-1 text-sm opacity-70 whitespace-nowrap">/ annual</span>
+                <span className="ml-2 text-sm line-through opacity-70 whitespace-nowrap">{plan.originalAnnualTotal} / annual</span>
+              </div>
+            )}
+
+            <p className="text-[18px] opacity-70 mb-2">Billed {isAnnual ? 'annually' : 'monthly'}</p>
 
             <button
               onClick={() => setSelectedPlan(plan.id)}
