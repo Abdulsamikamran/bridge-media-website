@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const carouselData = [
   {
@@ -176,65 +177,15 @@ export default function ScrollCarousel() {
 
   return (
     <div className="relative my-20 text-white h-[500px] overflow-hidden max-w-screen-2xl mx-auto" ref={containerRef}>
-      <style jsx global>{`
-        @keyframes slideFromBottom {
-          from {
-            transform: translateY(30px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        /* Custom stacking effect for images - based on test.css */
-        .stacked-image-container {
-          position: relative;
-          width: 560px;
-          height: 420px;
-          perspective: 1000px;
-          overflow: visible;
-        }
-
-        .carousel-image {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          border-radius: 1.5rem;
-          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-          overflow: hidden;
-        }
-
-        .image-current {
-          z-index: 20;
-          transform: translateY(0) scale(1) rotateX(0deg);
-          opacity: 1;
-        }
-
-        .image-prev {
-          z-index: 10;
-          transform: translateY(-20px) scale(0.95) rotateX(5deg);
-          opacity: 0.7;
-          filter: brightness(0.7);
-        }
-
-        .image-hidden {
-          z-index: 0;
-          transform: translateY(50px) scale(0.9) rotateX(10deg);
-          opacity: 0;
-        }
-      `}</style>
-
       {/* Navigation Dots */}
       <div className="absolute right-8 top-1/2 transform -translate-y-1/2 flex flex-col gap-3 z-50">
         {carouselData.map((_, index) => (
-          <button
+          <motion.button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${currentIndex === index ? 'bg-white ' : 'bg-gray-500'}`}
+            className={`w-2 h-2 rounded-full ${currentIndex === index ? 'bg-white' : 'bg-gray-500'}`}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
@@ -243,80 +194,183 @@ export default function ScrollCarousel() {
       {/* Slides */}
       <div className="w-full h-full relative">
         {carouselData.map((item, index) => {
-          // Determine visibility classes
           const isActive = index === currentIndex
           const isPrevious = index === prevIndex
           const isVisible = isActive || isPrevious
 
-          return (
-            <div key={item.id} className={`absolute inset-0 flex items-center justify-center ${isVisible ? 'visible' : 'invisible'}`}>
+          return isVisible ? (
+            <motion.div
+              key={item.id}
+              className="absolute inset-0 flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{ zIndex: isActive ? 20 : 10 }}
+            >
               <div className="flex flex-wrap md:flex-nowrap gap-8 items-center justify-center max-w-6xl w-full px-4 md:px-8 lg:px-12 mx-auto">
-                {/* Image with stacking animation */}
-                <div className="stacked-image-container shrink-0">
+                {/* Image stack container */}
+                <div className="shrink-0 relative w-[560px] h-[420px] perspective-[1000px] overflow-visible">
+                  {/* Stack effect - we render all visible images */}
                   {carouselData.map((imageItem, imageIndex) => {
-                    // Only render current and previous images
-                    if (imageItem.image && (imageIndex === currentIndex || imageIndex === prevIndex)) {
-                      return (
-                        <div
-                          key={`image-${imageItem.id}`}
-                          className={`carousel-image ${
-                            imageIndex === currentIndex ? 'image-current' : imageIndex === prevIndex ? 'image-prev' : 'image-hidden'
-                          }`}
-                        >
-                          <Image
-                            src={imageItem.image}
-                            alt={imageItem.title}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 560px"
-                            priority={imageIndex === 0}
-                            className="object-cover"
-                          />
-                        </div>
-                      )
+                    // Only render images if they have an image and are either current or previous
+                    if (!imageItem.image || !(imageIndex === currentIndex || imageIndex === prevIndex)) {
+                      return null
                     }
-                    return null
+
+                    const isCurrent = imageIndex === currentIndex
+                    const isPrev = imageIndex === prevIndex
+
+                    // Different variants for different states
+                    const variants = {
+                      current: {
+                        y: 0,
+                        scale: 1,
+                        rotateX: 0,
+                        opacity: 1,
+                        zIndex: 20,
+                        filter: 'brightness(1)',
+                      },
+                      previous: {
+                        y: -20,
+                        scale: 0.95,
+                        rotateX: 5,
+                        opacity: 0.7,
+                        zIndex: 10,
+                        filter: 'brightness(0.7)',
+                      },
+                      hidden: {
+                        y: 50,
+                        scale: 0.9,
+                        rotateX: 10,
+                        opacity: 0,
+                        zIndex: 0,
+                        filter: 'brightness(0.5)',
+                      },
+                    }
+
+                    return (
+                      <motion.div
+                        key={`image-${imageItem.id}`}
+                        className="absolute w-full h-full rounded-3xl overflow-hidden"
+                        initial="hidden"
+                        animate={isCurrent ? 'current' : isPrev ? 'previous' : 'hidden'}
+                        variants={variants}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 30,
+                        }}
+                        style={{
+                          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                          transformStyle: 'preserve-3d',
+                        }}
+                      >
+                        <Image
+                          src={imageItem.image}
+                          alt={imageItem.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 560px"
+                          priority={imageIndex === 0}
+                          className="object-cover"
+                        />
+                      </motion.div>
+                    )
                   })}
 
                   {/* No image fallback */}
                   {item.image === null && isActive && (
-                    <div className="carousel-image image-current flex items-center justify-center text-white">No Image Available</div>
+                    <motion.div
+                      key={`no-image-${item.id}`}
+                      className="absolute w-full h-full rounded-3xl flex items-center justify-center text-white"
+                      initial={{ y: 30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: -20, opacity: 0 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 30,
+                      }}
+                      style={{
+                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+                      }}
+                    >
+                      No Image Available
+                    </motion.div>
                   )}
                 </div>
 
                 {/* Text with slide animation */}
                 <div className="flex-1 flex flex-col justify-center">
-                  {/* Only show text content for current slide */}
                   {isActive && (
-                    <div
+                    <motion.div
                       key={`text-${item.id}`}
-                      className="transform transition-transform duration-500 self-stretch"
-                      style={{
-                        animation: 'slideFromBottom 0.4s ease-out forwards',
+                      className="self-stretch"
+                      initial={{ y: 30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 30,
+                        delay: 0.1,
                       }}
                     >
-                      <h2 className="text-[36px] font-normal mb-4">{item.title}</h2>
+                      <motion.h2
+                        className="text-[36px] font-normal mb-4"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 30,
+                          delay: 0.2,
+                        }}
+                      >
+                        {item.title}
+                      </motion.h2>
                       <div className="self-stretch inline-flex justify-start items-center gap-1">
-                        <p className="flex-1 justify-start text-base-text-medium-default text-lg font-normal font-Inter leading-normal text-[#D0D4D9] mb-8">
+                        <motion.p
+                          className="flex-1 justify-start text-base-text-medium-default text-lg font-normal font-Inter leading-normal text-[#D0D4D9] mb-8"
+                          initial={{ y: 20, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          transition={{
+                            type: 'spring',
+                            stiffness: 300,
+                            damping: 30,
+                            delay: 0.3,
+                          }}
+                        >
                           {item.description}
-                        </p>
+                        </motion.p>
                       </div>
-                    </div>
+                    </motion.div>
                   )}
 
-                  {/* Buttons without animation - fixed position */}
-                  <div className="z-30 flex flex-wrap gap-3">
-                    {isActive &&
-                      item.buttons.map((button, btnIndex) => (
-                        <button key={btnIndex} className="btn-outline">
+                  {/* Buttons with animation */}
+                  {isActive && (
+                    <motion.div
+                      className="z-30 flex flex-wrap gap-3"
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 300,
+                        damping: 30,
+                        delay: 0.4,
+                      }}
+                    >
+                      {item.buttons.map((button, btnIndex) => (
+                        <motion.button key={btnIndex} className="btn-outline" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                           {button.text}
                           <Image src={button.icon} alt="arrow" width={20} height={20} />
-                        </button>
+                        </motion.button>
                       ))}
-                  </div>
+                    </motion.div>
+                  )}
                 </div>
               </div>
-            </div>
-          )
+            </motion.div>
+          ) : null
         })}
       </div>
     </div>
